@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamification — Lisa Wang</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FDF8F2;
+    --warm-white: #FFFCF8;
+    --ink: #1C1917;
+    --ink-soft: #44403C;
+    --ink-muted: #78716C;
+    --accent: #3B6EA5;
+    --accent-light: #E1EAF5;
+    --accent-mid: #7AAAD4;
+    --border: rgba(28,25,23,0.1);
+    --border-soft: rgba(28,25,23,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.7; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(253,248,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .nav-back { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-back:hover { color: var(--accent); }
+  .nav-back span { font-size: 1rem; }
+  .nav-name { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 500; color: var(--ink); text-decoration: none; }
+  .nav-next { font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .nav-next:hover { color: var(--accent); }
+
+  .cs-hero { padding: 10rem 3rem 5rem; max-width: 1100px; margin: 0 auto; position: relative; }
+
+  .cs-hero-bg {
+    position: fixed; inset: 0; z-index: -1;
+    background: radial-gradient(ellipse 50% 40% at 90% 20%, rgba(59,110,165,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cs-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 100px; margin-bottom: 1.25rem; }
+  .cs-tag::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+
+  .cs-title { font-family: 'Lora', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .cs-title em { font-style: italic; color: var(--accent); }
+
+  .cs-lead { font-size: 1.1rem; color: var(--ink-soft); line-height: 1.75; max-width: 600px; margin-bottom: 2.5rem; }
+  .cs-lead strong { color: var(--ink); font-weight: 600; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 5rem; }
+  .stat-item { background: var(--warm-white); padding: 1.5rem; display: flex; flex-direction: column; gap: 4px; }
+  .stat-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .stat-value { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 500; color: var(--accent); line-height: 1; }
+  .stat-sub { font-size: 0.8rem; color: var(--ink-muted); }
+
+  .cs-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; }
+  .cs-section { margin-bottom: 5rem; }
+
+  .section-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+  .section-title { font-family: 'Lora', serif; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 1rem; }
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .body-text { font-size: 1rem; color: var(--ink-soft); line-height: 1.85; margin-bottom: 1.25rem; max-width: 680px; }
+  .body-text strong { color: var(--ink); font-weight: 600; }
+  .body-text em { color: var(--accent); font-style: italic; }
+
+  .mockup-placeholder { background: var(--warm-white); border: 1.5px dashed var(--border); border-radius: 16px; padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin: 2rem 0; min-height: 280px; text-align: center; }
+  .mockup-icon { width: 48px; height: 48px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+  .mockup-label { font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); letter-spacing: 0.04em; }
+  .mockup-hint { font-size: 0.78rem; color: var(--ink-muted); opacity: 0.7; max-width: 280px; line-height: 1.5; }
+  .mockup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+  .mockup-placeholder.sm { min-height: 200px; padding: 2rem; }
+
+  /* PROBLEM PILLS */
+  .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .problem-pill { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  .pill-num { font-family: 'Lora', serif; font-size: 2rem; font-weight: 500; color: var(--accent); opacity: 0.4; margin-bottom: 8px; line-height: 1; }
+  .pill-text { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.65; }
+
+  /* SCOPE */
+  .scope-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .scope-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .scope-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+  .scope-surface { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; display: flex; align-items: center; }
+  .scope-role { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.5; }
+  .scope-ownership { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 8px; }
+
+  /* MOMENT CARDS */
+  .moment-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+  .moment-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; position: relative; overflow: hidden; }
+  .moment-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); border-radius: 4px 0 0 4px; }
+  .moment-badge { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; background: var(--accent-light); color: var(--accent); margin-bottom: 0.6rem; }
+  .moment-title { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem; }
+  .moment-text { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.75; }
+  .moment-text strong { color: var(--ink); font-weight: 600; }
+
+  /* CALLOUT */
+  .callout { background: var(--accent); color: white; border-radius: 20px; padding: 2.5rem; margin: 2rem 0; }
+  .callout-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 0.75rem; }
+  .callout-text { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 400; line-height: 1.65; color: white; font-style: italic; }
+
+  /* ROADMAP */
+  .roadmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+  .roadmap-item { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .roadmap-phase { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .roadmap-name { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .roadmap-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.5; }
+
+  .reflection { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; }
+
+  .next-cs { border-top: 1px solid var(--border-soft); padding: 3rem; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; transition: background 0.2s; }
+  .next-cs:hover { background: var(--warm-white); }
+  .next-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .next-title { font-family: 'Lora', serif; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+  .next-arrow { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--ink-muted); flex-shrink: 0; transition: all 0.2s; }
+  .next-cs:hover .next-arrow { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .cs-hero, .cs-body { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .problem-grid, .scope-grid, .roadmap-grid { grid-template-columns: 1fr; }
+    .mockup-grid { grid-template-columns: 1fr; }
+    .next-cs { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cs-hero-bg"></div>
+
+<nav>
+  <a href="food-planner.html" class="nav-back"><span>←</span> Food Planner</a>
+  <a href="index.html" class="nav-name">Lisa Wang</a>
+  <a href="pm-tool.html" class="nav-next">Next case study <span>→</span></a>
+</nav>
+
+<div class="cs-hero">
+  <div class="cs-tag">0→1 Initiative · Self-pitched · 2026</div>
+  <h1 class="cs-title">Gamification — making associates feel <em>seen</em></h1>
+  <p class="cs-lead">The data existed. The metrics mattered. But the <strong>audience was wrong.</strong> Store leaders seeing associate performance doesn't change associate behavior — associates seeing their own performance does.</p>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">Origin</span>
+      <span class="stat-value" style="font-size:1.1rem; padding-top:4px;">Self-<br>pitched</span>
+      <span class="stat-sub">Director & VP buy-in</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Surfaces</span>
+      <span class="stat-value">3</span>
+      <span class="stat-sub">POS · Mobile · Back office</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">My role</span>
+      <span class="stat-value" style="font-size:1.1rem; padding-top:4px;">PM +<br>Driver</span>
+      <span class="stat-sub">Back office owner & initiative lead</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">MVP ships</span>
+      <span class="stat-value">~1 mo</span>
+      <span class="stat-sub">From now</span>
+    </div>
+  </div>
+</div>
+
+<div class="cs-body">
+
+  <!-- THE PROBLEM -->
+  <div class="cs-section reveal">
+    <div class="section-label">The problem</div>
+    <h2 class="section-title">Metrics that <em>mattered</em> to no one</h2>
+    <p class="body-text">Store performance metrics — plus sells, reward sign-ups, reward scans, transaction counts — were consistently low across locations. The data existed. The goals were set. But the needle wasn't moving.</p>
+    <p class="body-text">My hypothesis: <strong>associates didn't have visibility into the metrics they were moving every day.</strong> When you can't see your own impact, there's no feedback loop. No motivation to push harder. No connection between the effort you put in and the result it creates.</p>
+
+    <div class="problem-grid">
+      <div class="problem-pill">
+        <div class="pill-num">01</div>
+        <div class="pill-text">Associates don't feel seen. Their daily contributions — every plus sell, every reward scan — are invisible to themselves.</div>
+      </div>
+      <div class="problem-pill">
+        <div class="pill-num">02</div>
+        <div class="pill-text">No sense that effort matters. Without visibility, there's no feedback loop between action and outcome.</div>
+      </div>
+      <div class="problem-pill">
+        <div class="pill-num">03</div>
+        <div class="pill-text">Disconnection between associate goals and store goals — leaving potential execution untapped at the source.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Root cause</div>
+      <div class="callout-text">"A leaderboard already existed in back office — but only store leaders could see it. The metrics were there. The motivation was locked behind the wrong door."</div>
+    </div>
+  </div>
+
+  <!-- THE PITCH -->
+  <div class="cs-section reveal">
+    <div class="section-label">How it started</div>
+    <h2 class="section-title">From observation to <em>VP buy-in</em></h2>
+    <p class="body-text">This initiative wasn't handed to me — I brought it to the table. After identifying the pattern of consistently low execution metrics, I framed gamification as a positive reinforcement system: turning everyday tasks into celebrated wins, giving associates the visibility they deserved, and creating a natural feedback loop between effort and outcome.</p>
+    <p class="body-text">I pitched the initiative to my Director and VP, got the buy-in, and became the main driver — owning the back office surface and partnering closely with the POS PM to design a cohesive associate experience across all three touchpoints.</p>
+
+    <div class="mockup-placeholder">
+      <div class="mockup-icon">📋</div>
+      <div class="mockup-label">Initiative brief / pitch deck</div>
+      <div class="mockup-hint">Insert your pitch document, initiative brief, or framing artifact here</div>
+    </div>
+  </div>
+
+  <!-- SCOPE -->
+  <div class="cs-section reveal">
+    <div class="section-label">Scope & ownership</div>
+    <h2 class="section-title">Three surfaces, one <em>experience</em></h2>
+    <p class="body-text">Gamification touches three surfaces. My ownership spans back office — the store leader view — and my role as initiative driver means I'm coordinating strategy and experience across all three in partnership with the POS PM.</p>
+
+    <div class="scope-grid">
+      <div class="scope-card">
+        <div class="scope-surface"><span class="scope-dot" style="background:#3B6EA5;"></span>POS terminal</div>
+        <div class="scope-role">Associate-facing screens. Where associates experience recognition during and after their shift.</div>
+        <div class="scope-ownership">Collaborating PM</div>
+      </div>
+      <div class="scope-card">
+        <div class="scope-surface"><span class="scope-dot" style="background:#4A7C59;"></span>Mobile device</div>
+        <div class="scope-role">Floor associate interface. Ongoing performance visibility throughout the shift.</div>
+        <div class="scope-ownership">Initiative driver</div>
+      </div>
+      <div class="scope-card">
+        <div class="scope-surface"><span class="scope-dot" style="background:#C4693A;"></span>Back office</div>
+        <div class="scope-role">Store leader view. Program oversight, configuration, and historical performance.</div>
+        <div class="scope-ownership">PM owner</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MVP EXPERIENCE -->
+  <div class="cs-section reveal">
+    <div class="section-label">The MVP</div>
+    <h2 class="section-title">Designed around <em>the associate's day</em></h2>
+    <p class="body-text">The central design challenge: surface performance information without disrupting the associate workflow. Every touchpoint was mapped to where the associate's head actually is in that moment — not just where the screen happens to be.</p>
+
+    <div class="moment-cards">
+      <div class="moment-card">
+        <div class="moment-badge">First login of shift</div>
+        <h3 class="moment-title">Yesterday's store highlight</h3>
+        <p class="moment-text">When an associate logs in for the first time in their shift, they see what the <strong>team achieved together yesterday</strong> — cumulative plus sells, reward sign-ups, and reward scans. Framed as a collective win, not a ranking. Sets the tone: we're building toward something together.</p>
+      </div>
+
+      <div class="moment-card">
+        <div class="moment-badge">During shift</div>
+        <h3 class="moment-title">My progress tab</h3>
+        <p class="moment-text">Accessible from the menu bar at any time. Associates can view their <strong>own real-time metrics</strong> alongside yesterday's store performance — personal context, without pressure. Pull, not push: the associate chooses when to look.</p>
+      </div>
+
+      <div class="moment-card">
+        <div class="moment-badge">On time-out / soft log out</div>
+        <h3 class="moment-title">Soft recap splash screen</h3>
+        <p class="moment-text">A non-intrusive progress recap on the splash screen. Serves a dual purpose: surfaces the data for associates who want to see it, and <strong>reinforces associate accountability</strong> — if someone logs onto a terminal they weren't assigned to, they'll see another associate's data and be reminded to return to their own terminal.</p>
+      </div>
+
+      <div class="moment-card">
+        <div class="moment-badge">On hard log out</div>
+        <h3 class="moment-title">Shift recap</h3>
+        <p class="moment-text">A full <strong>individual performance recap</strong> closes out the shift. This is the celebration moment — a summary of what the associate personally contributed during their time on the floor.</p>
+      </div>
+    </div>
+
+    <div class="mockup-grid" style="margin-top: 2rem;">
+      <div class="mockup-placeholder sm">
+        <div class="mockup-icon">🌅</div>
+        <div class="mockup-label">First login — store highlight</div>
+        <div class="mockup-hint">Insert POS screen showing yesterday's team achievement</div>
+      </div>
+      <div class="mockup-placeholder sm">
+        <div class="mockup-icon">📱</div>
+        <div class="mockup-label">My progress tab</div>
+        <div class="mockup-hint">Insert mid-shift progress view screen</div>
+      </div>
+    </div>
+    <div class="mockup-grid">
+      <div class="mockup-placeholder sm">
+        <div class="mockup-icon">⏸️</div>
+        <div class="mockup-label">Time-out splash screen</div>
+        <div class="mockup-hint">Insert soft logout recap screen</div>
+      </div>
+      <div class="mockup-placeholder sm">
+        <div class="mockup-icon">🎉</div>
+        <div class="mockup-label">Shift recap — hard logout</div>
+        <div class="mockup-hint">Insert end-of-shift individual achievement screen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY DECISION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Key design decision</div>
+    <h2 class="section-title">Delightful, not <em>intrusive</em></h2>
+    <p class="body-text">We considered showing an associate performance recap every time they re-logged in mid-shift — not just the first login of the day. Before they reached the keyboard view, they'd see a recap of their performance so far.</p>
+    <p class="body-text">We decided against it. When an associate re-logs mid-shift, they almost always have a task in mind — a customer to check out, an item to restock. An interstitial screen at that moment is an obstacle, not a delight. They'd skip past it immediately, and the data would lose all meaning through repetition.</p>
+    <p class="body-text">The first login is different: the associate is just starting their day — open, ready, unhurried. The timeout splash is different too: it's a natural pause, not an interruption. <strong>Every touchpoint was designed around where the associate's head actually is, not just where the screen happens to be.</strong></p>
+
+    <div class="callout">
+      <div class="callout-label">Design principle</div>
+      <div class="callout-text">"Information shown at the wrong moment isn't information — it's noise. The goal was to make every touchpoint feel earned, not imposed."</div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="cs-section reveal">
+    <div class="section-label">What's next</div>
+    <h2 class="section-title">The <em>long game</em></h2>
+    <p class="body-text">The MVP is the foundation. The full vision is a system where associates stop seeing metrics as tasks imposed on them — and start seeing them as a personal score worth improving. The store's goals become their goals. That shift in ownership is what drives sustained execution, not just short-term compliance.</p>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 2</div>
+        <div class="roadmap-name">Badging system</div>
+        <div class="roadmap-desc">Recognition for milestone achievements — first plus sell, reward scan streaks, top performer moments.</div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 3</div>
+        <div class="roadmap-name">Associate leaderboard</div>
+        <div class="roadmap-desc">Friendly competition at the store level, designed to motivate without creating unhealthy pressure.</div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 4</div>
+        <div class="roadmap-name">Store execution dashboard</div>
+        <div class="roadmap-desc">Leadership view of gamification impact across locations — tying associate engagement to store-level outcomes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Reflection</div>
+    <div class="reflection">
+      <h2 class="section-title" style="margin-bottom:1rem;">What this project is really about</h2>
+      <p class="body-text">Gamification is often misunderstood as a design trick — add points and badges, watch engagement go up. That's not what this is. The core insight is simpler and more human: <strong>people rise to meet the standards they can see.</strong></p>
+      <p class="body-text" style="margin-bottom:0;">When associates don't have visibility into what they're contributing, there's no feedback loop. This initiative is about closing that loop — giving every associate the information they need to take ownership of their work, and feel proud of it.</p>
+    </div>
+  </div>
+
+</div>
+
+<a href="pm-tool.html" class="next-cs">
+  <div>
+    <div class="next-label">Next case study</div>
+    <div class="next-title">Program management tool — built for the pain I lived →</div>
+  </div>
+  <div class="next-arrow">→</div>
+</a>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
