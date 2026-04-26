@@ -105,7 +105,26 @@
     75% { border-radius: 70% 30% 60% 40% / 50% 50% 40% 60%; }
   }
 
-  .hero-content { position: relative; z-index: 1; max-width: 640px; }
+  .hero-content { 
+    position: relative; 
+    z-index: 1; 
+    max-width: 640px;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .hero-text { flex: 1; }
+
+  .hero-portrait {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--accent-light);
+    box-shadow: 0 8px 32px rgba(196,105,58,0.15);
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
 
   .hero-tag {
     display: inline-flex; align-items: center; gap: 8px;
@@ -532,6 +551,17 @@
     section { padding: 4rem 1.5rem; }
     .hero { padding: 7rem 1.5rem 4rem; }
     .hero-decoration { display: none; }
+    .hero-content { 
+      flex-direction: column; 
+      text-align: center; 
+      gap: 2rem;
+      max-width: 100%;
+    }
+    .hero-portrait { 
+      width: 150px; 
+      height: 150px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
     .case-card { grid-template-columns: 1fr; padding: 1.75rem; }
     .case-arrow { display: none; }
@@ -558,15 +588,18 @@
   <div class="hero-bg"></div>
   <div class="hero-decoration"></div>
   <div class="hero-content">
-    <div class="hero-tag">Product Manager · Store Systems</div>
-    <h1 class="hero-name">Hi, I'm <span>Lisa Wang</span></h1>
-    <p class="hero-tagline">
-      I don't patch problems. <strong>I find the root cause, dream big, and build the fix that lasts.</strong>
-    </p>
-    <div class="hero-cta">
-      <a href="#work" class="btn-primary">See my work</a>
-      <a href="#about" class="btn-secondary">About me</a>
+    <div class="hero-text">
+      <div class="hero-tag">Product Manager · Store Systems</div>
+      <h1 class="hero-name">Hi, I'm <span>Lisa Wang</span></h1>
+      <p class="hero-tagline">
+        I don't patch problems. <strong>I find the root cause, dream big, and build the fix that lasts.</strong>
+      </p>
+      <div class="hero-cta">
+        <a href="#work" class="btn-primary">See my work</a>
+        <a href="#about" class="btn-secondary">About me</a>
+      </div>
     </div>
+    <img src="lisa-portrait.png" alt="Lisa Wang" class="hero-portrait">
   </div>
   <div class="hero-scroll">
     <div class="scroll-line"></div>
