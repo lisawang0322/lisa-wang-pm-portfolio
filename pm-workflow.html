@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM Workflow Toolkit — Lisa Wang</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FDF8F2;
+    --warm-white: #FFFCF8;
+    --ink: #1C1917;
+    --ink-soft: #44403C;
+    --ink-muted: #78716C;
+    --accent: #7B5BA3;
+    --accent-light: #EDE8F8;
+    --accent-mid: #B89ED1;
+    --border: rgba(28,25,23,0.1);
+    --border-soft: rgba(28,25,23,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.7; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 3rem; background: rgba(253,248,242,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-soft); }
+  .nav-back { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-back:hover { color: var(--accent); }
+  .nav-back span { font-size: 1rem; }
+  .nav-name { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 500; color: var(--ink); text-decoration: none; }
+  .nav-home { font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .nav-home:hover { color: var(--accent); }
+
+  .cs-hero { padding: 10rem 3rem 5rem; max-width: 1100px; margin: 0 auto; }
+  .cs-hero-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(ellipse 50% 40% at 90% 20%, rgba(123,91,163,0.07) 0%, transparent 70%); pointer-events: none; }
+
+  .cs-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 100px; margin-bottom: 1.25rem; }
+  .cs-tag::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+
+  .cs-title { font-family: 'Lora', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .cs-title em { font-style: italic; color: var(--accent); }
+  .cs-lead { font-size: 1.1rem; color: var(--ink-soft); line-height: 1.75; max-width: 600px; margin-bottom: 2.5rem; }
+  .cs-lead strong { color: var(--ink); font-weight: 600; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 5rem; }
+  .stat-item { background: var(--warm-white); padding: 1.5rem; display: flex; flex-direction: column; gap: 4px; }
+  .stat-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .stat-value { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 500; color: var(--accent); line-height: 1; }
+  .stat-sub { font-size: 0.8rem; color: var(--ink-muted); }
+
+  .cs-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; }
+  .cs-section { margin-bottom: 5rem; }
+
+  .section-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+  .section-title { font-family: 'Lora', serif; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 1rem; }
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .body-text { font-size: 1rem; color: var(--ink-soft); line-height: 1.85; margin-bottom: 1.25rem; max-width: 680px; }
+  .body-text strong { color: var(--ink); font-weight: 600; }
+  .body-text em { color: var(--accent); font-style: italic; }
+
+  /* PAIN POINTS */
+  .pain-stack { display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0; }
+  .pain-item { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .pain-num { font-family: 'Lora', serif; font-size: 1.5rem; color: var(--accent); opacity: 0.4; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .pain-text { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.7; }
+  .pain-text strong { color: var(--ink); font-weight: 600; }
+
+  /* BUILD STEPS */
+  .build-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .build-step { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; position: relative; }
+  .build-step-num { font-family: 'Lora', serif; font-size: 2.5rem; font-weight: 500; color: var(--accent); opacity: 0.15; line-height: 1; margin-bottom: 8px; }
+  .build-step-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .build-step-text { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.6; }
+
+  /* WORKFLOW GRID */
+  .workflow-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin: 1.5rem 0; }
+  .workflow-chip { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 0.75rem; text-align: center; }
+  .workflow-num { font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 500; color: var(--accent); opacity: 0.3; line-height: 1; margin-bottom: 4px; }
+  .workflow-cmd { font-size: 0.8rem; font-weight: 700; color: var(--ink); font-family: 'Courier New', monospace; margin-bottom: 4px; }
+  .workflow-desc { font-size: 0.7rem; color: var(--ink-muted); line-height: 1.4; }
+
+  /* SKILL STAGE PILLS */
+  .skill-stages { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0; }
+  .skill-stage-pill { background: var(--warm-white); border: 1px solid var(--border); border-radius: 100px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 8px; }
+  .skill-stage-name { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+  .skill-stage-count { font-size: 0.72rem; font-weight: 600; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 100px; }
+
+  /* FEATURE CARDS */
+  .feature-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+  .feature-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; position: relative; overflow: hidden; }
+  .feature-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); border-radius: 4px 0 0 4px; }
+  .feature-card.hero-feature { border: 2px solid var(--accent); }
+  .feature-card.hero-feature::before { width: 0; }
+  .feature-badge { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; background: var(--accent-light); color: var(--accent); margin-bottom: 0.6rem; }
+  .feature-title { font-family: 'Lora', serif; font-size: 1.15rem; font-weight: 500; margin-bottom: 0.5rem; }
+  .feature-text { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.75; }
+  .feature-text strong { color: var(--ink); font-weight: 600; }
+
+  /* CONTEXT GRID */
+  .context-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .context-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; }
+  .context-card-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .context-card-items { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .context-card-items li { font-size: 0.88rem; color: var(--ink-soft); padding-left: 0.75rem; position: relative; }
+  .context-card-items li::before { content: '·'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  /* CALLOUT */
+  .callout { background: var(--accent); color: white; border-radius: 20px; padding: 2.5rem; margin: 2rem 0; }
+  .callout-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 0.75rem; }
+  .callout-text { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 400; line-height: 1.65; color: white; font-style: italic; }
+
+  .reflection { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; }
+
+  /* RELATED LINK */
+  .related-link { display: flex; align-items: center; justify-content: space-between; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem 2rem; text-decoration: none; color: inherit; transition: all 0.2s; margin: 1.5rem 0; }
+  .related-link:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(123,91,163,0.1); }
+  .related-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  .related-title { font-family: 'Lora', serif; font-size: 1rem; font-weight: 500; color: var(--ink); }
+  .related-arrow { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--ink-muted); flex-shrink: 0; transition: all 0.2s; }
+  .related-link:hover .related-arrow { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .back-home { border-top: 1px solid var(--border-soft); padding: 3rem; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; transition: background 0.2s; }
+  .back-home:hover { background: var(--warm-white); }
+  .back-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .back-title { font-family: 'Lora', serif; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+  .back-arrow { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--ink-muted); flex-shrink: 0; transition: all 0.2s; }
+  .back-home:hover .back-arrow { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .cs-hero, .cs-body { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .build-steps { grid-template-columns: 1fr; }
+    .workflow-grid { grid-template-columns: repeat(2, 1fr); }
+    .context-grid { grid-template-columns: 1fr; }
+    .back-home { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cs-hero-bg"></div>
+
+<nav>
+  <a href="pm-tool.html" class="nav-back"><span>←</span> PM Tool</a>
+  <a href="index.html" class="nav-name">Lisa Wang</a>
+  <a href="index.html" class="nav-home">Back to portfolio <span>↗</span></a>
+</nav>
+
+<div class="cs-hero">
+  <div class="cs-tag">Personal project · AI systems design · Built for the team</div>
+  <h1 class="cs-title">10 workflows. 39 skills. Built for the <em>whole team</em>.</h1>
+  <p class="cs-lead">I'd already shipped a full-stack tool for my own pain. Then I looked around and saw the same friction everywhere — PMs reinventing the wheel at every stage, context lost at handoffs. <strong>So I designed and built an AI-powered PM toolkit, calibrated end-to-end for the 7-Eleven Store Systems team.</strong></p>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">Workflows</span>
+      <span class="stat-value">10</span>
+      <span class="stat-sub">Design thinking stages</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">AI skills</span>
+      <span class="stat-value">39</span>
+      <span class="stat-sub">Automated PM tasks</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Coverage</span>
+      <span class="stat-value" style="font-size:1rem; padding-top:6px;">Empathize<br>→ Measure</span>
+      <span class="stat-sub">End-to-end lifecycle</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Agent</span>
+      <span class="stat-value" style="font-size:1rem; padding-top:6px;">Custom-<br>calibrated</span>
+      <span class="stat-sub">7-Eleven team context</span>
+    </div>
+  </div>
+</div>
+
+<div class="cs-body">
+
+  <!-- THE FRICTION -->
+  <div class="cs-section reveal">
+    <div class="section-label">The problem</div>
+    <h2 class="section-title">The friction I kept <em>seeing everywhere</em></h2>
+    <p class="body-text">The <a href="pm-tool.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">PM tool I built earlier</a> solved my pain — one PM, one problem, one fix. But zooming out, the friction wasn't mine alone. Every PM on the team was dealing with the same structural inefficiencies, just in different forms.</p>
+
+    <div class="pain-stack">
+      <div class="pain-item">
+        <div class="pain-num">01</div>
+        <div class="pain-text"><strong>Reinventing the wheel, every cycle.</strong> Personas, interview scripts, test plans, launch checklists — built from memory on each new project, with no shared templates to build from.</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">02</div>
+        <div class="pain-text"><strong>Research that never compounds.</strong> Insights from one project rarely inform the next. There's no system to capture and reuse what we've learned about store associates, the 7MD experience, or POS behavior.</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">03</div>
+        <div class="pain-text"><strong>Context lost at every handoff.</strong> PM to UX. UX to engineering. At each boundary, some of the original user context gets dropped — because the artifacts passing between teams don't have a standard format or depth.</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">04</div>
+        <div class="pain-text"><strong>Months to get new PMs up to speed.</strong> The team's product surfaces, their ownership scope, the difference between what PMs do vs. what UX and engineering own — this knowledge lives in heads, not systems.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY FOR THE TEAM -->
+  <div class="cs-section reveal">
+    <div class="section-label">The shift</div>
+    <h2 class="section-title">A personal tool vs. a <em>team multiplier</em></h2>
+    <p class="body-text">The PM tool was about my pain. I was the user, I felt the friction, I built the fix. But fixing problems at team scale requires a different lens — not "what do I need?" but "what does everyone need, all the time, across every project?"</p>
+    <p class="body-text">The highest-leverage intervention here wasn't another feature. It was giving the whole team better starting artifacts — so every PM spends less time on structural work and more time on strategic judgment. One well-designed system doesn't just help me; it multiplies what every PM on the team can do.</p>
+
+    <div class="callout">
+      <div class="callout-label">The insight</div>
+      <div class="callout-text">"The most impactful thing I could do for my team wasn't ship another feature. It was give every PM the building blocks to ship everything else, faster and better."</div>
+    </div>
+  </div>
+
+  <!-- HOW I BUILT IT -->
+  <div class="cs-section reveal">
+    <div class="section-label">How I built it</div>
+    <h2 class="section-title">System design, not just <em>software</em></h2>
+    <p class="body-text">This project wasn't about writing code — it was about designing a system. Mapping what every PM does across a product lifecycle, identifying what's automatable, and baking team-specific intelligence into the agent so that the output is actually useful, not generic.</p>
+
+    <div class="build-steps">
+      <div class="build-step">
+        <div class="build-step-num">01</div>
+        <div class="build-step-title">Map the lifecycle</div>
+        <div class="build-step-text">Structured the full PM design thinking cycle into 10 stages — from capturing ideas to measuring post-launch. Each stage became a guided workflow with explicit human review checkpoints.</div>
+      </div>
+      <div class="build-step">
+        <div class="build-step-num">02</div>
+        <div class="build-step-title">Design the skills</div>
+        <div class="build-step-text">Per stage, identified which PM tasks are structural (automatable) vs. strategic (judgment-required). Designed 39 skills to accelerate the structural work while keeping PMs in control of every key decision.</div>
+      </div>
+      <div class="build-step">
+        <div class="build-step-num">03</div>
+        <div class="build-step-title">Calibrate the agent</div>
+        <div class="build-step-text">Wrote the agent configuration with 7-Eleven Store Systems context baked in: team surfaces, ownership scope, role boundaries, and decision frameworks. The agent knows what this team builds and what it doesn't touch.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT I BUILT -->
+  <div class="cs-section reveal">
+    <div class="section-label">What I built</div>
+    <h2 class="section-title">10 workflows. 39 skills. <em>One calibrated agent.</em></h2>
+
+    <p class="body-text" style="margin-bottom: 2rem;">The full design thinking lifecycle — from capturing an idea to measuring post-launch — covered end-to-end.</p>
+
+    <div class="workflow-grid">
+      <div class="workflow-chip">
+        <div class="workflow-num">00</div>
+        <div class="workflow-cmd">/create-issue</div>
+        <div class="workflow-desc">Capture ideas</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">01</div>
+        <div class="workflow-cmd">/start</div>
+        <div class="workflow-desc">Begin project</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">02</div>
+        <div class="workflow-cmd">/empathize</div>
+        <div class="workflow-desc">User research</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">03</div>
+        <div class="workflow-cmd">/define</div>
+        <div class="workflow-desc">Problem framing</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">04</div>
+        <div class="workflow-cmd">/ideate</div>
+        <div class="workflow-desc">Brainstorm</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">05</div>
+        <div class="workflow-cmd">/prototype</div>
+        <div class="workflow-desc">Mockups</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">06</div>
+        <div class="workflow-cmd">/test</div>
+        <div class="workflow-desc">Validation</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">07</div>
+        <div class="workflow-cmd">/implement</div>
+        <div class="workflow-desc">Build handoff</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">08</div>
+        <div class="workflow-cmd">/launch</div>
+        <div class="workflow-desc">Deploy</div>
+      </div>
+      <div class="workflow-chip">
+        <div class="workflow-num">09</div>
+        <div class="workflow-cmd">/measure</div>
+        <div class="workflow-desc">Iterate</div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top: 2rem; margin-bottom: 1rem;">39 skills distributed across every stage — auto-invoked by the AI agent when relevant:</p>
+    <div class="skill-stages">
+      <div class="skill-stage-pill"><span class="skill-stage-name">Create Issue</span><span class="skill-stage-count">2</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Start</span><span class="skill-stage-count">3</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Empathize</span><span class="skill-stage-count">5</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Define</span><span class="skill-stage-count">4</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Ideate</span><span class="skill-stage-count">4</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Prototype</span><span class="skill-stage-count">5</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Test</span><span class="skill-stage-count">5</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Implement</span><span class="skill-stage-count">5</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Launch</span><span class="skill-stage-count">5</span></div>
+      <div class="skill-stage-pill"><span class="skill-stage-name">Measure</span><span class="skill-stage-count">5</span></div>
+    </div>
+
+    <div class="feature-cards" style="margin-top: 2.5rem;">
+      <div class="feature-card hero-feature">
+        <div class="feature-badge">Flagship: the custom agent</div>
+        <h3 class="feature-title">Team intelligence baked in — not bolted on</h3>
+        <p class="feature-text" style="margin-bottom:1rem;">Generic PM AI tools exist. What they don't have is your team's context. The agent I built knows what the 7-Eleven Store Systems team owns, what it doesn't, and what good PM work looks like within those constraints.</p>
+        <div class="context-grid">
+          <div class="context-card">
+            <div class="context-card-label">Team surfaces (owned)</div>
+            <ul class="context-card-items">
+              <li>Digital experience</li>
+              <li>Back office management system</li>
+              <li>7MD (7-Eleven Mobile Device)</li>
+              <li>POS (Point of Sale)</li>
+            </ul>
+          </div>
+          <div class="context-card">
+            <div class="context-card-label">Baked-in frameworks</div>
+            <ul class="context-card-items">
+              <li>Elon's 5-step algorithm</li>
+              <li>Digital vs. physical decision tree</li>
+              <li>PM role boundaries (what PMs own vs. don't)</li>
+              <li>Handoff-ready artifact formats</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-badge">Human review checkpoints</div>
+        <h3 class="feature-title">AI accelerates the structure. PMs own the judgment.</h3>
+        <p class="feature-text">Every workflow has explicit <strong>[HUMAN REVIEW]</strong> nodes where the PM must validate AI output before proceeding. The agent generates personas — the PM confirms which ones match reality. The agent drafts interview questions — the PM refines them. <strong>The distinction between what to automate and what to own is itself a product decision, and I made it deliberately.</strong></p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-badge">Issue lifecycle tracking</div>
+        <h3 class="feature-title">Ideas tracked from backlog to done — automatically</h3>
+        <p class="feature-text">Each idea lives in a structured folder: <code style="background: var(--accent-light); padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">IDEA-XXX/</code>. The agent automatically moves folders between <code style="background: var(--accent-light); padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">backlog/</code> → <code style="background: var(--accent-light); padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">in-progress/</code> → <code style="background: var(--accent-light); padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">done/</code> as PMs move through the lifecycle. Every artifact generated — personas, test scripts, user stories, launch checklists — lives within the idea's folder. <strong>Nothing gets lost between stages.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY DECISION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Key decision</div>
+    <h2 class="section-title">Team-specific over <em>generic</em></h2>
+    <p class="body-text">I could have pointed the team at an existing PM assistant — there are plenty. The problem with generic tools is exactly that: they're generic. They don't know that "suggest a solution" means staying within the Store Systems team's four surfaces. They don't know that PMs here don't write code or design UI. They don't know that handoff artifacts need to be formatted for UX and engineering, not just readable.</p>
+    <p class="body-text">That specificity is what makes the difference between a tool that's impressive and one that's actually used. Every PM who opens this toolkit on their first day already has months of accumulated team context at their fingertips.</p>
+
+    <div class="callout">
+      <div class="callout-label">PM principle</div>
+      <div class="callout-text">"Generic tools exist. What doesn't exist is a toolkit that already knows your product surfaces, your team structure, and your engineering handoff expectations. That specificity is the whole product."</div>
+    </div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Reflection</div>
+    <div class="reflection">
+      <h2 class="section-title" style="margin-bottom:1rem;">What building for others taught me</h2>
+      <p class="body-text">Building the PM tool taught me to be a sharper product thinker. Building this toolkit taught me something different: how to design for a team, not just yourself.</p>
+      <p class="body-text">When I'm the user, I can optimize for my own idiosyncrasies. When the team is the user, I have to strip away everything situational and keep only what's structural — the stages every PM goes through, the artifacts every handoff needs, the boundaries every team member has to respect. That constraint forced clarity I hadn't needed before.</p>
+      <p class="body-text" style="margin-bottom:0;">The result is a system where any PM on the team starts from a stronger position. They spend less time on structural work and more time on the judgment that no AI can replace. That tradeoff — human time freed for human thinking — is the most important product decision I made here.</p>
+    </div>
+  </div>
+
+  <!-- RELATED -->
+  <div class="cs-section reveal">
+    <div class="section-label">Related</div>
+    <h2 class="section-title" style="margin-bottom:1rem;">The other side of the story</h2>
+    <p class="body-text">This project pairs with the full-stack program management tool I built earlier — the one that solved my own pain. Together, they show two different kinds of initiative.</p>
+    <a href="pm-tool.html" class="related-link">
+      <div>
+        <div class="related-label">Also in this series</div>
+        <div class="related-title">Program management tool — built for the pain I lived</div>
+      </div>
+      <div class="related-arrow">→</div>
+    </a>
+  </div>
+
+</div>
+
+<a href="index.html" class="back-home">
+  <div>
+    <div class="back-label">You've reached the end</div>
+    <div class="back-title">← Back to Lisa Wang's portfolio</div>
+  </div>
+  <div class="back-arrow">↖</div>
+</a>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

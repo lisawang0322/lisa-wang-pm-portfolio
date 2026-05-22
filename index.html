@@ -327,6 +327,54 @@
 
   .case-studies { display: flex; flex-direction: column; gap: 2rem; }
 
+  /* CLUSTER GROUPING */
+  .cluster-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.5rem 0 0.25rem;
+    border-top: 1.5px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  .cluster-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 100px;
+    width: fit-content;
+    margin-bottom: 0.25rem;
+  }
+
+  .cluster-pill::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .cluster-title-text {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .cluster-desc-text {
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+    line-height: 1.65;
+    max-width: 640px;
+  }
+
   .case-card {
     background: var(--warm-white);
     border: 1px solid var(--border);
@@ -671,7 +719,7 @@
     <div class="reveal">
       <div class="section-label">Work</div>
       <h2 class="section-title">Case <em>studies</em></h2>
-      <p class="section-intro">Three projects that show how I think — from discovery through shipping, and the decisions made along the way.</p>
+      <p class="section-intro">Four projects that show how I think — from discovery through shipping, from solving my own pain to multiplying the whole team's capacity.</p>
     </div>
 
     <div class="case-studies">
@@ -734,6 +782,13 @@
         <div class="case-arrow">→</div>
       </a>
 
+      <!-- Cluster header: Team player evidence -->
+      <div class="cluster-header reveal">
+        <div class="cluster-pill">Team player · AI leverage</div>
+        <div class="cluster-title-text">Multiplying the team's output, not just my own</div>
+        <p class="cluster-desc-text">When I feel friction, I fix it. When my team feels it, I fix it for all of us. These two projects show how I think about leverage — not just shipping features, but multiplying what everyone around me can do.</p>
+      </div>
+
       <!-- Case Study 3: PM Tool -->
       <a href="pm-tool.html" class="case-card reveal" style="--card-accent: #C4693A; --tag-bg: #F5E6DC; --tag-color: #8B3D1A;">
         <div>
@@ -757,6 +812,35 @@
             <div class="highlight">
               <span class="highlight-val">Auto-mesh</span>
               <span class="highlight-label">Flagship feature</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-arrow">→</div>
+      </a>
+
+      <!-- Case Study 4: PM Workflow Toolkit -->
+      <a href="pm-workflow.html" class="case-card reveal" style="--card-accent: #7B5BA3; --tag-bg: #EDE8F8; --tag-color: #4B2D7A;">
+        <div>
+          <div class="case-meta">
+            <span class="case-tag">Personal project · AI systems design</span>
+            <span class="case-company">Built for the 7-Eleven Store Systems team</span>
+          </div>
+          <h3 class="case-title">PM Workflow Toolkit — when I built for the whole team</h3>
+          <p class="case-desc">
+            I'd already shipped a tool for my own pain. Then I looked around and saw the same friction everywhere — PMs reinventing the wheel at every stage, context lost at handoffs. I designed and built a 10-workflow, 39-skill AI toolkit, custom-calibrated for the 7-Eleven Store Systems team.
+          </p>
+          <div class="case-highlights">
+            <div class="highlight">
+              <span class="highlight-val">10</span>
+              <span class="highlight-label">Workflows</span>
+            </div>
+            <div class="highlight">
+              <span class="highlight-val">39</span>
+              <span class="highlight-label">AI skills</span>
+            </div>
+            <div class="highlight">
+              <span class="highlight-val">Custom agent</span>
+              <span class="highlight-label">Team-calibrated</span>
             </div>
           </div>
         </div>
