@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prism — Lisa Wang</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FDF8F2;
+    --warm-white: #FFFCF8;
+    --ink: #1C1917;
+    --ink-soft: #44403C;
+    --ink-muted: #78716C;
+    --accent: #9B3A6A;
+    --accent-light: #F5E0ED;
+    --accent-mid: #D68FAF;
+    --border: rgba(28,25,23,0.1);
+    --border-soft: rgba(28,25,23,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.7; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 3rem; background: rgba(253,248,242,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-soft); }
+  .nav-back { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-back:hover { color: var(--accent); }
+  .nav-back span { font-size: 1rem; }
+  .nav-name { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 500; color: var(--ink); text-decoration: none; }
+  .nav-home { font-size: 0.85rem; font-weight: 600; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .nav-home:hover { color: var(--accent); }
+
+  .cs-hero { padding: 10rem 3rem 5rem; max-width: 1100px; margin: 0 auto; }
+  .cs-hero-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(ellipse 50% 40% at 90% 20%, rgba(155,58,106,0.07) 0%, transparent 70%); pointer-events: none; }
+
+  .cs-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 100px; margin-bottom: 1.25rem; }
+  .cs-tag::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+
+  .cs-title { font-family: 'Lora', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .cs-title em { font-style: italic; color: var(--accent); }
+  .cs-lead { font-size: 1.1rem; color: var(--ink-soft); line-height: 1.75; max-width: 600px; margin-bottom: 2.5rem; }
+  .cs-lead strong { color: var(--ink); font-weight: 600; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 5rem; }
+  .stat-item { background: var(--warm-white); padding: 1.5rem; display: flex; flex-direction: column; gap: 4px; }
+  .stat-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .stat-value { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 500; color: var(--accent); line-height: 1; }
+  .stat-sub { font-size: 0.8rem; color: var(--ink-muted); }
+
+  .cs-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; }
+  .cs-section { margin-bottom: 5rem; }
+
+  .section-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+  .section-title { font-family: 'Lora', serif; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 1rem; }
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .body-text { font-size: 1rem; color: var(--ink-soft); line-height: 1.85; margin-bottom: 1.25rem; max-width: 680px; }
+  .body-text strong { color: var(--ink); font-weight: 600; }
+  .body-text em { color: var(--accent); font-style: italic; }
+
+  /* PAIN POINTS */
+  .pain-stack { display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0; }
+  .pain-item { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .pain-num { font-family: 'Lora', serif; font-size: 1.5rem; color: var(--accent); opacity: 0.4; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .pain-text { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.7; }
+  .pain-text strong { color: var(--ink); font-weight: 600; }
+
+  /* FEATURE CARDS */
+  .feature-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+  .feature-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; position: relative; overflow: hidden; }
+  .feature-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); border-radius: 4px 0 0 4px; }
+  .feature-card.hero-feature { border: 2px solid var(--accent); }
+  .feature-card.hero-feature::before { width: 0; }
+  .feature-badge { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; background: var(--accent-light); color: var(--accent); margin-bottom: 0.6rem; }
+  .feature-title { font-family: 'Lora', serif; font-size: 1.15rem; font-weight: 500; margin-bottom: 0.5rem; }
+  .feature-text { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.75; }
+  .feature-text strong { color: var(--ink); font-weight: 600; }
+
+  /* CALLOUT */
+  .callout { background: var(--accent); color: white; border-radius: 20px; padding: 2.5rem; margin: 2rem 0; }
+  .callout-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 0.75rem; }
+  .callout-text { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 400; line-height: 1.65; color: white; font-style: italic; }
+
+  .reflection { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; }
+
+  /* NEXT */
+  .next-cs { border-top: 1px solid var(--border-soft); padding: 3rem; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; transition: background 0.2s; }
+  .next-cs:hover { background: var(--warm-white); }
+  .next-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .next-title { font-family: 'Lora', serif; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+  .next-arrow { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--ink-muted); flex-shrink: 0; transition: all 0.2s; }
+  .next-cs:hover .next-arrow { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .cs-hero, .cs-body { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .next-cs { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cs-hero-bg"></div>
+
+<nav>
+  <a href="cook-scheduling.html" class="nav-back"><span>←</span> Cook Sequencing</a>
+  <a href="index.html" class="nav-name">Lisa Wang</a>
+  <a href="food-planner.html" class="nav-home">Start over <span>→</span></a>
+</nav>
+
+<div class="cs-hero">
+  <div class="cs-tag">Personal project · AI systems · Stealth</div>
+  <h1 class="cs-title">Building an AI pipeline — <em>and the infrastructure to trust it</em></h1>
+  <p class="cs-lead">I identified a workflow gap that every designer and PM hits but no tool solves cleanly. I built the fix — and then built the measurement system that tells me whether the AI is actually working. <strong>The eval infrastructure turned out to be the real product insight.</strong></p>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">AI model</span>
+      <span class="stat-value" style="font-size:1rem; padding-top:6px;">Claude<br>(Anthropic)</span>
+      <span class="stat-sub">Vision + text extraction</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Category</span>
+      <span class="stat-value" style="font-size:1rem; padding-top:6px;">Design-<br>tech</span>
+      <span class="stat-sub">Workflow automation</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Eval coverage</span>
+      <span class="stat-value">✓</span>
+      <span class="stat-sub">Regression pipeline built</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Stage</span>
+      <span class="stat-value" style="font-size:1rem; padding-top:6px;">Active<br>dev</span>
+      <span class="stat-sub">Working prototype</span>
+    </div>
+  </div>
+</div>
+
+<div class="cs-body">
+
+  <!-- THE PROBLEM -->
+  <div class="cs-section reveal">
+    <div class="section-label">The problem</div>
+    <h2 class="section-title">A workflow gap that <em>everyone accepts as normal</em></h2>
+    <p class="body-text">There's a direction the design-to-code conversation has focused on for years: getting designs into production. The reverse direction — taking something that exists in production and turning it into something you can think with — has no good solution. Teams handle it manually, which means they either pay a high time cost or skip it entirely.</p>
+    <p class="body-text">The deeper problem is that skipping it has consequences. Competitive analysis gets shallow. Design system audits don't happen. Stakeholder presentations rely on screenshots nobody can edit. The friction is consistent enough that I'd seen it called out — and worked around — across multiple roles and contexts.</p>
+
+    <div class="pain-stack">
+      <div class="pain-item">
+        <div class="pain-num">01</div>
+        <div class="pain-text"><strong>Manual recreation is slow enough to be deprioritized.</strong> When the right thing takes an hour that should take seconds, teams find reasons to skip it — and the product decisions that depend on it get made with less information.</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">02</div>
+        <div class="pain-text"><strong>Existing tools surface raw data, not semantic structure.</strong> Developer tools expose elements. Screenshot tools capture pixels. Neither gives you something editable, labeled, and structured — the format you need to actually reason about a UI.</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">03</div>
+        <div class="pain-text"><strong>The gap is wide enough to be a product opportunity.</strong> I've seen this problem across enough contexts that I'm confident it's structural, not situational. The right tool doesn't exist. That's the opening.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT I BUILT -->
+  <div class="cs-section reveal">
+    <div class="section-label">What I built</div>
+    <h2 class="section-title">An AI-powered pipeline with <em>a measurement layer underneath</em></h2>
+    <p class="body-text">The core product takes an interface — a live URL, a screenshot, anything visual — and converts it into a structured, editable representation that designers and PMs can work with directly, and that exports into industry-standard design tools as real, editable objects.</p>
+    <p class="body-text">I'm keeping the implementation details close for now. What I will describe is the thinking behind the AI integration, because that's where the product work got genuinely interesting.</p>
+
+    <div class="feature-cards">
+
+      <div class="feature-card">
+        <div class="feature-badge">AI integration</div>
+        <h3 class="feature-title">Claude for semantic understanding, not just extraction</h3>
+        <p class="feature-text">The hard part of this problem isn't capturing what's on a page — it's understanding what it <em>means</em>. A row of elements could be a navbar, a breadcrumb, a tab bar, or an image strip. I use Claude's vision capabilities to reason about semantic structure rather than just raw position and size. <strong>The model earns its place by doing the thing rules can't: making a judgment call about what something is for.</strong></p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-badge">Architecture</div>
+        <h3 class="feature-title">Multiple extraction strategies, scored against ground truth</h3>
+        <p class="feature-text">I run more than one approach and let the results compete. The winner isn't chosen by intuition — it's chosen by a scorer that measures each candidate against a set of known target layouts. <strong>This is the discipline that makes the pipeline trustworthy: no approach wins by default, and the machine decides what "better" means.</strong></p>
+      </div>
+
+      <!-- HERO FEATURE -->
+      <div class="feature-card hero-feature">
+        <div class="feature-badge">The real insight</div>
+        <h3 class="feature-title">Eval infrastructure — the thing that makes AI iteration safe</h3>
+        <p class="feature-text" style="margin-bottom:1rem;">Before I had measurement infrastructure, every change to the AI pipeline was a guess. "It looks better on this page" isn't a signal — it's noise. I might be improving one case while silently breaking three others.</p>
+        <p class="feature-text">I built a proper eval framework: fixture files encoding known target layouts, a scorer computing bounding-box overlap and component accuracy against those targets, and a replay system that runs the current pipeline against historical inputs and flags regressions. <strong>Now every change produces a number, and I can see exactly what got better and what didn't.</strong></p>
+        <p class="feature-text" style="margin-bottom:0;">This is the thing I'd want every AI product team to have. Not because it's technically impressive, but because without it you're flying blind — and "flying blind" is how you ship a demo instead of a product.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- KEY DECISION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Key decision</div>
+    <h2 class="section-title">Invest in eval early, <em>not after the fact</em></h2>
+    <p class="body-text">The tempting path was to build the product first and add measurement later. I've seen enough projects go that way to know how it ends: "later" never arrives, the team accumulates a collection of anecdotes instead of data, and every improvement is a guess dressed up as a decision.</p>
+    <p class="body-text">I chose to build the eval layer before the pipeline was even close to good. That meant the first few iterations produced measurable numbers that were honestly bad. But it also meant I could see the trajectory clearly — and that trajectory was consistently improving, because I could tell what was actually working.</p>
+
+    <div class="callout">
+      <div class="callout-label">PM principle</div>
+      <div class="callout-text">"Shipping an AI feature without eval infrastructure is the same as shipping any feature without metrics. 'It looks right' is not a measurement. The eval layer is what turns a demo into a product you can own and improve."</div>
+    </div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Reflection</div>
+    <div class="reflection">
+      <h2 class="section-title" style="margin-bottom:1rem;">What this taught me about building AI products</h2>
+      <p class="body-text">The most valuable thing I built in this project wasn't the AI pipeline — it was the framework for knowing whether the AI pipeline was good. That shift in thinking has changed how I approach AI product quality generally.</p>
+      <p class="body-text"><strong>Models are not deterministic, and that means product quality is a distribution, not a state.</strong> A feature isn't "working" or "broken" — it's working at some rate, on some input distribution, with some error pattern. The right question isn't "does it work?" but "where does it fail, how often, and is that rate going down?" Eval infrastructure is what makes those questions answerable.</p>
+      <p class="body-text">This project also reinforced something I believe about where product intuition creates the most value: the problems worth investing in are the ones where the gap between "what's available" and "what's actually needed" is large enough that no existing solution fills it. That gap is visible if you've lived the problem. I had lived this one.</p>
+      <p class="body-text" style="margin-bottom:0;">I'm continuing to develop Prism. If you're curious about the problem space or the approach, I'm always happy to talk through it.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- NEXT CASE STUDY -->
+<a href="food-planner.html" class="next-cs">
+  <div>
+    <div class="next-label">Start from the beginning</div>
+    <div class="next-title">Food Planner — from static report to dynamic experience →</div>
+  </div>
+  <div class="next-arrow">→</div>
+</a>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
