@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook Sequencing — Lisa Wang</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FDF8F2;
+    --warm-white: #FFFCF8;
+    --ink: #1C1917;
+    --ink-soft: #44403C;
+    --ink-muted: #78716C;
+    --accent: #2D7D9A;
+    --accent-light: #E0F0F8;
+    --accent-mid: #6BAFCA;
+    --border: rgba(28,25,23,0.1);
+    --border-soft: rgba(28,25,23,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.7; overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(253,248,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .nav-back {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--ink-muted); text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .nav-back:hover { color: var(--accent); }
+  .nav-back span { font-size: 1rem; }
+
+  .nav-name {
+    font-family: 'Lora', serif; font-size: 1.1rem;
+    font-weight: 500; color: var(--ink); text-decoration: none;
+  }
+
+  .nav-next {
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--ink-muted); text-decoration: none;
+    letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+
+  .nav-next:hover { color: var(--accent); }
+
+  /* HERO */
+  .cs-hero {
+    padding: 10rem 3rem 5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .cs-hero-bg {
+    position: fixed; inset: 0; z-index: -1;
+    background: radial-gradient(ellipse 50% 40% at 90% 20%, rgba(45,125,154,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cs-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px;
+    margin-bottom: 1.25rem;
+  }
+
+  .cs-tag::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+
+  .cs-title {
+    font-family: 'Lora', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 500; line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem; max-width: 760px;
+  }
+
+  .cs-title em { font-style: italic; color: var(--accent); }
+
+  .cs-lead {
+    font-size: 1.1rem; color: var(--ink-soft);
+    line-height: 1.75; max-width: 640px;
+    margin-bottom: 2.5rem;
+  }
+
+  .cs-lead strong { color: var(--ink); font-weight: 600; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    margin-bottom: 5rem;
+  }
+
+  .stat-item {
+    background: var(--warm-white);
+    padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .stat-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+
+  .stat-value {
+    font-family: 'Lora', serif;
+    font-size: 1.8rem; font-weight: 500;
+    color: var(--accent); line-height: 1;
+  }
+
+  .stat-sub { font-size: 0.8rem; color: var(--ink-muted); }
+
+  /* CONTENT */
+  .cs-body { max-width: 1100px; margin: 0 auto; padding: 0 3rem 6rem; }
+
+  .cs-section { margin-bottom: 5rem; }
+
+  .section-label {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Lora', serif;
+    font-size: 1.75rem; font-weight: 500;
+    letter-spacing: -0.02em; line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .body-text {
+    font-size: 1rem; color: var(--ink-soft);
+    line-height: 1.85; margin-bottom: 1.25rem;
+    max-width: 680px;
+  }
+
+  .body-text strong { color: var(--ink); font-weight: 600; }
+  .body-text em { color: var(--accent); font-style: italic; }
+
+  /* SCENARIO BLOCK */
+  .scenario-block {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem 2rem;
+    margin: 1.75rem 0;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+
+  .scenario-block .scenario-label {
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .scenario-block p { margin-bottom: 0.5rem; }
+  .scenario-block p:last-child { margin-bottom: 0; }
+  .scenario-block strong { color: var(--ink); font-weight: 600; }
+
+  /* MODEL OUTPUT MOCK */
+  .output-mock {
+    background: var(--ink);
+    color: #E8F4F8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-family: 'Nunito', monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin: 1.5rem 0;
+  }
+
+  .output-mock .mock-line-red { color: #F97066; }
+  .output-mock .mock-line-yellow { color: #FDB022; }
+  .output-mock .mock-line-green { color: #75E0A7; }
+  .output-mock .mock-meta { color: #78716C; font-size: 0.78rem; }
+
+  /* TAB BLOCKS */
+  .tab-block {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tab-block::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+    border-radius: 4px 0 0 4px;
+  }
+
+  .tab-number {
+    font-family: 'Lora', serif;
+    font-size: 3rem; font-weight: 500;
+    color: var(--accent); opacity: 0.15;
+    position: absolute; top: 1.5rem; right: 2rem;
+    line-height: 1;
+  }
+
+  .tab-badge {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 100px;
+    background: var(--accent-light); color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .tab-title {
+    font-family: 'Lora', serif;
+    font-size: 1.25rem; font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .tab-problem {
+    font-size: 0.9rem; color: var(--ink-muted);
+    line-height: 1.7; margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(28,25,23,0.03);
+    border-radius: 8px;
+    border-left: 2px solid var(--border);
+  }
+
+  .tab-problem::before {
+    content: 'Challenge';
+    display: block; font-size: 0.68rem;
+    font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-muted);
+    margin-bottom: 4px; opacity: 0.6;
+  }
+
+  .tab-solution { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.75; }
+  .tab-solution strong { color: var(--ink); font-weight: 600; }
+
+  /* RESULTS TABLE */
+  .results-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.88rem; margin: 1.25rem 0;
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+
+  .results-table th {
+    background: var(--accent-light); color: var(--accent);
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.75rem 1rem; text-align: left;
+  }
+
+  .results-table td {
+    padding: 0.7rem 1rem; color: var(--ink-soft);
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .results-table tr.winner td { color: var(--ink); font-weight: 600; }
+  .results-table .val-accent { color: var(--accent); font-family: 'Lora', serif; font-size: 1rem; }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--accent);
+    color: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 2rem 0;
+  }
+
+  .callout-label {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6); margin-bottom: 0.75rem;
+  }
+
+  .callout-text {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem; font-weight: 400;
+    line-height: 1.65; color: white;
+    font-style: italic;
+  }
+
+  /* DEPRIORITIZED */
+  .deprio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+
+  .deprio-card {
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem;
+  }
+
+  .deprio-name {
+    font-size: 0.9rem; font-weight: 600;
+    color: var(--ink-muted); margin-bottom: 6px;
+    text-decoration: line-through;
+    text-decoration-color: var(--border);
+  }
+
+  .deprio-reason { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.6; }
+
+  /* REFLECTION */
+  .reflection {
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2.5rem;
+  }
+
+  /* NEXT CASE STUDY */
+  .next-cs {
+    border-top: 1px solid var(--border-soft);
+    padding: 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    text-decoration: none; color: inherit;
+    transition: background 0.2s;
+  }
+
+  .next-cs:hover { background: var(--warm-white); }
+
+  .next-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+
+  .next-title {
+    font-family: 'Lora', serif;
+    font-size: 1.5rem; font-weight: 500;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+
+  .next-arrow {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; color: var(--ink-muted);
+    flex-shrink: 0; transition: all 0.2s;
+  }
+
+  .next-cs:hover .next-arrow {
+    background: var(--accent); border-color: var(--accent); color: white;
+  }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .cs-hero, .cs-body { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .deprio-grid { grid-template-columns: 1fr; }
+    .next-cs { padding: 2rem 1.5rem; }
+    .results-table { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cs-hero-bg"></div>
+
+<nav>
+  <a href="pm-workflow.html" class="nav-back"><span>←</span> PM Workflow Toolkit</a>
+  <a href="index.html" class="nav-name">Lisa Wang</a>
+  <a href="food-planner.html" class="nav-next">Start over <span>→</span></a>
+</nav>
+
+<!-- HERO -->
+<div class="cs-hero">
+  <div class="cs-tag">AI/ML · Product · Personal project</div>
+  <h1 class="cs-title">Cook Sequencing — turning a 30-second guess into a <em>millisecond decision</em></h1>
+  <p class="cs-lead">During lunch peak, a store associate has 30 seconds to decide which item to load into the oven first. Five items, one oven, overlapping windows, a customer waiting at the register. I built an end-to-end ML system that makes that call correctly 69% of the time — and <strong>proved that's 40 points better than what even a sophisticated AI reasoner can do at production scale.</strong></p>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">Holdout accuracy</span>
+      <span class="stat-value">68.9%</span>
+      <span class="stat-sub">730-scenario temporal holdout</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">vs. associate baseline</span>
+      <span class="stat-value">+60pp</span>
+      <span class="stat-sub">Associates score 8.9% on 28 items</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Model iterations</span>
+      <span class="stat-value">5</span>
+      <span class="stat-sub">v1 → v2.1 → v2.2 → v2.3 → v3</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Pilot ROI</span>
+      <span class="stat-value">13×</span>
+      <span class="stat-sub">$180 savings vs $12.87 cost/store/mo</span>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="cs-body">
+
+  <!-- DISCOVERY -->
+  <div class="cs-section reveal">
+    <div class="section-label">Discovery</div>
+    <h2 class="section-title">The <em>30-second</em> moment</h2>
+    <p class="body-text">It is 11:47 AM during lunch peak. Food Planner shows five items due in overlapping 15-minute windows — pizza, wings, beef mini tacos, waffle tots, hot dogs — with one oven available. A customer is waiting at the register. The associate has roughly 30 seconds to decide which item to load first before the next task pulls them away.</p>
+
+    <div class="scenario-block">
+      <span class="scenario-label">The job-to-be-done</span>
+      <p>When I'm a store associate during lunch peak with 5 items due in overlapping windows, one oven, and customers waiting, <strong>I want to know which item to cook first</strong> — accounting for cook time and daypart close time — so I can make one decision and start cooking without guessing, hit every daypart on time, and avoid waste.</p>
+      <p>But first I need to trust the ranking enough to follow it instead of defaulting to habit, and the system needs to explain <em>why</em> in plain language, not a score.</p>
+    </div>
+
+    <p class="body-text">Food Planner already existed — it told associates what to cook and when. But it didn't tell them <strong>which to load first</strong> given oven constraints, and not what to deprioritize when running behind. Without that, associates defaulted to a mix of habit (30%), expiration instinct (40%), and convenience (20%). With 28 competing items, that near-random approach scores about 8.9% on optimal cook order — barely above the 3.6% random floor.</p>
+    <p class="body-text">The question I set out to answer: can a learned model do better than an experienced associate making this call under pressure? And — critically — can it do better than an AI reasoning about it in natural language?</p>
+  </div>
+
+  <!-- ARCHITECTURE DECISION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Architecture</div>
+    <h2 class="section-title">Three tiers <em>by design</em></h2>
+    <p class="body-text">Before writing a line of code, I made one architectural bet: <strong>this is a classification problem, not a generation problem.</strong> The correct cook order given a scenario is deterministic — urgency, demand, hold time, and historical waste patterns are enough to reconstruct ground truth labels. That makes it exactly the kind of task where predictive ML should win.</p>
+    <p class="body-text">I designed a three-tier stack from the start, with a clear role for each layer:</p>
+
+    <div class="tab-block">
+      <div class="tab-number">01</div>
+      <div class="tab-badge">Tier 1 — Floor</div>
+      <h3 class="tab-title">v1 rule-based ranker: urgency × demand density × waste penalty</h3>
+      <div class="tab-problem">Before any ML: no system. Associates guess. Baseline is ~8.9% on 28-item scenarios. The rule-based tier needs to be explainable, trust-buildable, and a meaningful lift over human baseline before we add complexity.</div>
+      <p class="tab-solution">A deterministic priority score: <strong>urgency</strong> (1 / time remaining) × <strong>demand density</strong> (forecast / LCU) × <strong>waste penalty</strong> (1 + LCU / demand). Items whose window is closing get highest urgency; items that require many batches get ranked up; items with large batch sizes relative to demand get penalized less because over-cooking is more wasteful. <strong>Result: 58.6% on the 730-scenario holdout</strong> — a +49.7pp lift over the associate floor.</p>
+    </div>
+
+    <div class="tab-block">
+      <div class="tab-number">02</div>
+      <div class="tab-badge">Tier 2 — ML</div>
+      <h3 class="tab-title">v2.2 pairwise GBM: learned from historical cook outcomes</h3>
+      <div class="tab-problem">The rule formula uses static weights. It can't learn that wings in urban stores at lunch peak behave differently than highway stores at 6 AM. It can't adapt to item-specific historical waste patterns. And it treats every pairwise decision identically when some comparisons are clear-cut and others are genuinely ambiguous.</div>
+      <p class="tab-solution">Reformulated as a pairwise ranking problem: "Should item A go before item B?" Each pairwise comparison gets 36 features — per-item urgency, demand, hold time, historical write-off rates by hour and store type, and difference features (diff_demand_density, diff_urgency) that directly encode the comparison. <strong>Sample weights downweighted near-tied pairs</strong> (same urgency, both 0 waste) to avoid rewarding the model for learning from noise. Trained on a temporal split: holdout scenarios are strictly after 2025-05-01. <strong>Result: 68.9% on the honest temporal test</strong> — +10.3pp over v1.</p>
+    </div>
+
+    <div class="tab-block">
+      <div class="tab-number">03</div>
+      <div class="tab-badge">Tier 3 — Ceiling benchmark</div>
+      <h3 class="tab-title">LLM (claude-sonnet-4-6): idealized human-judgment proxy</h3>
+      <div class="tab-problem">How close to "correct" is idealized human reasoning about this problem? If a very capable model, reasoning like an experienced associate, makes the same call as the formula on most scenarios — that validates the formula as ground truth. If it systematically diverges — that's a signal worth investigating.</div>
+      <p class="tab-solution">Three prompt iterations (v0.1 zero-shot → v0.2 associate-voice → v0.3 plain-language JTBD). On 5-item scenarios, the LLM reached 95.8% JTBD accuracy — impressive. But on <strong>150-item production-scale scenarios</strong> (19–28 items), it scored only <strong>26.7%</strong> formula top-1, −40.6pp vs v2.2. The LLM passes refusal guardrails (93.3% OOS accuracy) and has better must-precede-violation rate — but fails latency (11s vs 3s budget) and fails the task it was tested on at scale. <strong>Architecture conclusion: ship v2.2 ML. Use LLM patterns for guardrails only.</strong></p>
+    </div>
+  </div>
+
+  <!-- WHAT I BUILT -->
+  <div class="cs-section reveal">
+    <div class="section-label">What I built</div>
+    <h2 class="section-title">Data, models, and an <em>honest reckoning</em></h2>
+
+    <div class="tab-block">
+      <div class="tab-number">01</div>
+      <div class="tab-badge">Synthetic data pipeline</div>
+      <h3 class="tab-title">Generating 175,000 events worth of ground truth</h3>
+      <div class="tab-problem">There was no real store data available — and even if there were, write-off logs are notoriously noisy (gaps, counting errors, major discrepancies). I needed labeled training scenarios where I could trust the ground truth.</div>
+      <p class="tab-solution">Built a deterministic synthetic generator covering 28 items across 3 store types for 180 days, producing <strong>175,051 cook events</strong>, 766K POS sales records, and 148K write-off entries. Write-off quality was intentionally injected with realistic noise: 60% accurate, 15% gaps, 20% counting errors, 5% major discrepancies. An independent validator classified confidence from actual quantity differences — producing <strong>93.8% usable training data</strong>. From this, I extracted <strong>2,164 labeled decision-point scenarios</strong> (moments where 2+ oven items competed) using a composite priority score that blended observable features with actual waste outcomes.</p>
+    </div>
+
+    <div class="tab-block">
+      <div class="tab-number">02</div>
+      <div class="tab-badge">Model development</div>
+      <h3 class="tab-title">Eight iterations from multiclass noise to honest pairwise ranking</h3>
+      <div class="tab-problem">The first two model iterations failed not because of bad features — because of bad labels. When 70%+ of scenarios have 0 write-off, a label driven by raw write-off difference is almost entirely noise. The model learned nothing.</div>
+      <p class="tab-solution"><strong>The key insight:</strong> the labeling strategy matters more than feature engineering. Iteration 3 introduced a composite label combining urgency, demand density, hold penalty, and outcome-adjusted waste ratio — giving the model learnable structure plus actual outcome signal. That shifted from 42% CV accuracy to 64%. The pairwise reframing (v2.1) added another 13pp by giving each item pair its own dedicated training signal. v2.2 added temporal integrity (no leakage), soft sample weights, and train-only historical features. Final feature importances: <em>diff_demand_density</em> (0.450), <em>diff_urgency</em> (0.130), <em>diff_demand</em> (0.088) — sensible and domain-aligned.</p>
+    </div>
+
+    <div class="tab-block">
+      <div class="tab-number">03</div>
+      <div class="tab-badge">Fair-and-Robust eval harness</div>
+      <h3 class="tab-title">Never trust a diagnostic set that flatters the model you like</h3>
+      <div class="tab-problem">Early LLM results on 5-item plain-language scenarios looked excellent. If I'd stopped there, I'd have shipped based on a set that was confounded by small item count, prose-mode input, and easy refusal cases. The LLM's apparent advantage was entirely an artifact of the eval design.</div>
+      <p class="tab-solution">Built a three-tier evaluation protocol: <strong>Tier 1 (selection)</strong> — 730-scenario temporal holdout, ML only, authoritative for model choice. <strong>Tier 2 (guardrails)</strong> — must-precede violations, OOS refusal accuracy, latency budget, parse failures. <strong>Tier 3 (diagnostic)</strong> — 110 JTBD scenarios (2–5 items, plain-language), not used for selection. Added: bootstrap 95% CIs, McNemar paired significance tests, multi-seed associate floor, and a fair input ablation (<code>--input-mode=features</code>) that gave the LLM numeric data instead of prose — eliminating the prose confound. With fair input, LLM formula accuracy rose from 78.9% → 90.4%, matching v1/v2.2 (p=1.0). The diagnostic set wasn't wrong — it was answering a different question.</p>
+    </div>
+
+    <div class="tab-block">
+      <div class="tab-number">04</div>
+      <div class="tab-badge">Demo & API</div>
+      <h3 class="tab-title">Streamlit app + Docker stack: associate-facing explanation surface</h3>
+      <div class="tab-problem">Accuracy is necessary but not sufficient. Associates need to understand the recommendation well enough to trust it and defend it to their manager when questioned.</div>
+      <p class="tab-solution">Built a <strong>3-page Streamlit app</strong> (scenario comparison, impact dashboard, what-if simulator) plus a Docker stack with a FastAPI backend serving v2.2 at ~100ms inference. The associate-facing output pairs the ranked sequence with a plain-language explanation generated from a template engine — not an LLM — so there's no hallucination risk and no latency penalty. The what-if simulator lets store leaders adjust store type, hour, and demand in real time to see how the recommendation changes, building intuition for the system's logic.
+
+        <br><br>Agency model: <strong>augmentation only.</strong> The system recommends; the associate executes; full override at all times. Food safety decisions cannot be delegated, and trust is earned incrementally through consistently correct recommendations.</p>
+    </div>
+  </div>
+
+  <!-- KEY DECISION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Key decision</div>
+    <h2 class="section-title">Why the <em>diagnostic set</em> was lying</h2>
+    <p class="body-text">The most important product decision in this project wasn't which model to ship — it was which eval metric to trust when the results pointed in opposite directions.</p>
+    <p class="body-text">On the v0.3 JTBD diagnostic set (110 examples, 2–5 items, plain-language descriptions), the LLM scored 95.8% on JTBD accuracy. v1 scored 89.5%. v2.2 scored 83.2%. If that were the final word, the answer would be "use the LLM." But the diagnostic set was confounded: the LLM received prose descriptions (more information), the scenarios were small (2–5 items vs production's 19–28), and the JTBD labels captured a different construct than formula optimality.</p>
+
+    <div class="callout">
+      <div class="callout-label">The critical test</div>
+      <div class="callout-text">"On 5-item plain-language scenarios: LLM 95.8%, v2.2 83.2%. On 150-item production scenarios: LLM 26.7%, v2.2 67.3%. I almost shipped the wrong model based on the wrong eval set."</div>
+    </div>
+
+    <p class="body-text">The holdout head-to-head (150 modal scenarios drawn from the ML temporal holdout, 19–28 items each) settled it: the LLM underperforms v2.2 by 40.6 percentage points at production scale. McNemar p &lt; 0.001. The difference is statistically significant and operationally decisive.</p>
+    <p class="body-text">The right framework: <strong>selection metrics must use the hardest, most production-representative slice.</strong> Diagnostic sets are for debugging, not for shipping decisions. The diagnostic set was useful — it revealed that the "LLM vs ML" story was largely a prose-advantage confound. The holdout set revealed what matters at the checkout counter at noon.</p>
+
+    <div class="deprio-grid">
+      <div class="deprio-card">
+        <div class="deprio-name">v3 LightGBM LambdaRank</div>
+        <div class="deprio-reason">−2.7pp vs v2.2 on the honest holdout (66.2% vs 68.9%). Cleaner listwise architecture, NDCG@1 of 0.723, 11× fewer training rows — but top-1 regression is real. Hold for production data.</div>
+      </div>
+      <div class="deprio-card">
+        <div class="deprio-name">LLM as primary ranking model</div>
+        <div class="deprio-reason">−40pp at scale, 11s latency vs 3s budget, hallucination risk on edge cases. Strong for OOS refusal (93.3%). Wrong engine for the ranking problem.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTCOME -->
+  <div class="cs-section reveal">
+    <div class="section-label">Outcome</div>
+    <h2 class="section-title">68.9% — and why <em>that number is honest</em></h2>
+
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Comparator</th>
+          <th>730-scenario holdout</th>
+          <th>Modal head-to-head (n=150)</th>
+          <th>vs. associate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Associate baseline</td>
+          <td>8.9%</td>
+          <td>14.0%</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>v1 rule-based</td>
+          <td>58.6%</td>
+          <td>56.7%</td>
+          <td>+49.7pp</td>
+        </tr>
+        <tr class="winner">
+          <td>v2.2 ML (production)</td>
+          <td><span class="val-accent">68.9%</span></td>
+          <td><span class="val-accent">67.3%</span></td>
+          <td><span class="val-accent">+60.0pp</span></td>
+        </tr>
+        <tr>
+          <td>LLM v0.3 (benchmark)</td>
+          <td>—</td>
+          <td>26.7%</td>
+          <td>+17.8pp</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="body-text">The 68.9% holdout figure is honest because it was computed on a strictly held-out temporal partition (scenarios after 2025-05-01, never seen during training or feature computation). Historical write-off features were computed from training-period data only — no leakage. The associate floor uses 20 random seeds to report mean ± std rather than a single lucky draw.</p>
+    <p class="body-text">At pilot scale (50 stores), v2.2 costs <strong>$12.87/store/month</strong> — 12 inference calls per day at ~$0.021 each. The projected waste reduction (3 units/hour → 1 unit/hour) translates to <strong>$180/store/month in write-off savings</strong>, a 13× ROI at pilot and ~22× at full chain (13,000 stores) as infrastructure costs amortize.</p>
+    <p class="body-text">What remains open: production data. The 68.9% is on synthetic data with injected noise. A real-store pilot would provide labeled execution data for retraining and, critically, the adherence study needed to prove that accuracy translates to behavior change — and that behavior change translates to actual write-off reduction.</p>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="cs-section reveal">
+    <div class="section-label">Reflection</div>
+    <div class="reflection">
+      <h2 class="section-title" style="margin-bottom:1rem;">What this taught me</h2>
+      <p class="body-text"><strong>Labeling strategy beats feature engineering.</strong> The first two model iterations had decent features and terrible labels. The model learned almost nothing. Once the labels encoded a learnable composite signal — urgency plus hold time plus outcome adjustment — accuracy jumped 20+ points without touching the features. If the target is noise, the model will learn to predict noise.</p>
+      <p class="body-text"><strong>Evaluation design is a product decision.</strong> The most consequential choices weren't model hyperparameters — they were which eval set to use for selection, whether to use a temporal split, and whether to control for input format when comparing ML vs LLM. Each one changes what you ship. Getting these wrong means shipping based on a flattering number rather than an honest one.</p>
+      <p class="body-text" style="margin-bottom:0;"><strong>Augmentation is the right agency model for this class of problem.</strong> Food safety and associate trust don't leave room for autonomous action. The right interface is "here's the recommendation and here's why" — then the human decides. A system that earns trust through consistently correct, explainable recommendations is the foundation for anything more ambitious later.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- NEXT CASE STUDY -->
+<a href="food-planner.html" class="next-cs">
+  <div>
+    <div class="next-label">Start from the beginning</div>
+    <div class="next-title">Food Planner — from static report to dynamic experience →</div>
+  </div>
+  <div class="next-arrow">→</div>
+</a>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
